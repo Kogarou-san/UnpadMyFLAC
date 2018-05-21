@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace UnpadMyFLAC
@@ -30,18 +23,15 @@ namespace UnpadMyFLAC
 			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
 				Filter = "Any file|*.*",
-				Title = "Select a file from a folder you want to read dates and write names"
+				Title = "Select a file from a folder you want to remove FLAC padding"
 			};
 
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
-				String directory = Path.GetDirectoryName(openFileDialog.FileName);
-				String[] fileEntries = Directory.GetFiles(directory);
-				//UInt64 i = 1;                           //Counter
+				String		directory	= Path.GetDirectoryName(openFileDialog.FileName);
+				String[]	fileEntries = Directory.GetFiles(directory);
 				foreach (String file in fileEntries)
 				{
-					//String fileName = Path.GetFileName(file);
-
 					Process process = new Process();
 					process.StartInfo.UseShellExecute = true;
 					process.StartInfo.RedirectStandardOutput = false;
@@ -50,6 +40,33 @@ namespace UnpadMyFLAC
 					process.StartInfo.Arguments = String.Concat("--remove --block-type=PADDING --dont-use-padding \"", file, '\"');
 
 					process.Start();
+				}
+			}
+		}
+
+		private void btnOpenAllFolders_Click(object sender, EventArgs e)
+		{
+			FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog
+			{
+				Description = "Select a file from a folder and subfolders you want to remove FLAC padding",
+				ShowNewFolderButton = false
+			};
+
+			if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+			{
+				String		directory		= folderBrowserDialog.SelectedPath;
+				String[]	fileEntries		= Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
+				foreach (String file in fileEntries)
+				{
+					Process process = new Process();
+					process.StartInfo.UseShellExecute = true;
+					process.StartInfo.RedirectStandardOutput = false;
+					process.StartInfo.RedirectStandardOutput = false;
+					process.StartInfo.FileName = "metaflac.exe";
+					process.StartInfo.Arguments = String.Concat("--remove --block-type=PADDING --dont-use-padding \"", file, '\"');
+
+					process.Start();
+					process.WaitForExit(60 * 1000);
 				}
 			}
 		}
