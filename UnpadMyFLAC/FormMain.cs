@@ -33,13 +33,14 @@ namespace UnpadMyFLAC
 				foreach (String file in fileEntries)
 				{
 					Process process = new Process();
-					process.StartInfo.UseShellExecute = true;
+					process.StartInfo.UseShellExecute = false;
 					process.StartInfo.RedirectStandardOutput = false;
 					process.StartInfo.RedirectStandardOutput = false;
 					process.StartInfo.FileName = "metaflac.exe";
 					process.StartInfo.Arguments = String.Concat("--remove --block-type=PADDING --dont-use-padding \"", file, '\"');
 
 					process.Start();
+					process.WaitForExit(60 * 1000);
 				}
 			}
 		}
@@ -59,7 +60,7 @@ namespace UnpadMyFLAC
 				foreach (String file in fileEntries)
 				{
 					Process process = new Process();
-					process.StartInfo.UseShellExecute = true;
+					process.StartInfo.UseShellExecute = false;
 					process.StartInfo.RedirectStandardOutput = false;
 					process.StartInfo.RedirectStandardOutput = false;
 					process.StartInfo.FileName = "metaflac.exe";
